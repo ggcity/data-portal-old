@@ -1,0 +1,21 @@
+{
+  "name": "@ggcity/map-viewer",
+  "version": "1.0.0-beta.1",
+  "description": "UI for switching groups of map overlays",
+  "main": "index.js",
+  "repository": "https://github.com/ggcity/map-viewer",
+  "author": "Rachot Moragraan",
+  "license": "GPL-3.0",
+  "flat": true,
+  "dependencies": {
+    "@ggcity/leaflet-map": "^0.4.0",
+    "@ggcity/leaflet-wms": "^0.4.0",
+    "@ggcity/leaflet-tile-layer": "^0.4.0",
+    "@polymer/paper-toggle-button": "PolymerElements/paper-toggle-button#3.0-preview",
+    "@polymer/polymer": "3.0.0-pre.1",
+    "js-yaml": "^3.10.0"
+  },
+  "devDependencies": {
+    "leaflet": "^1.2.0"
+  }
+}

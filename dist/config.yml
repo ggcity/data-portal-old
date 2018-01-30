@@ -1,0 +1,128 @@
+baseMaps:
+  - source: '//www.ci.garden-grove.ca.us/tileserver/styles/gg-basic/{z}/{x}/{y}.png'
+    format: XYZ
+    attribution: '&copy; OpenStreetMap'
+  - source: //www.ci.garden-grove.ca.us/geoserver/gwc/service/wms
+    format: WMS
+    layers: 'gis:2017_aerials'
+
+wmsDefaultSource: //www.ci.garden-grove.ca.us/geoserver/gis/wms
+
+overlayMaps:
+  - machineName: general
+    name: General Layers
+    description: 'Parcels, Fire Stations, Boundaries, etc'
+    layers:
+      optionals:
+        - machineName: 'gis:fd_stations'
+          name: Fire Stations
+          visible: true
+        - machineName: 'gis:city_parcels'
+          name: Parcels
+          visible: true
+        - machineName: 'gis:city_boundary'
+          name: OC City Boundaries
+          visible: true
+    initialCenter:
+      - 33.778724
+      - -117.960058
+
+  - machineName: political-districts
+    name: Political Districts
+    description: Council districts and State Senate / Congressional / Assembly districts
+    layers:
+      alwaysOn:
+        - 'gis:city_boundary'
+      exclusives:
+        - machineName: 'gis:city_council_districts'
+          name: City Council Districts
+          visible: true
+        - machineName: 'gis:ca_senate_districts'
+          name: State Senate Districts
+        - machineName: 'gis:ca_assembly_districts'
+          name: State Assembly Districts
+        - machineName: 'gis:ca_congress_districts'
+          name: State Congressional Districts
+    initialCenter:
+      - 33.778724
+      - -117.960058
+    initialZoom: 13
+    resetViewOnSelect: true
+
+  - machineName: trash-pickup
+    name: Trash Pickup
+    description: Find your trash pickup day
+    layers:
+      alwaysOn:
+        - 'gis:city_boundary'
+      exclusives:
+        - machineName: 'gis:pw_trash_pickup'
+          name: Trash Pickup Schedule
+          visible: true
+    initialCenter:
+      - 33.778724
+      - -117.960058
+    initialZoom: 13
+    resetViewOnSelect: true
+
+  - machineName: street-sweeping
+    name: Street Sweeping
+    description: Avoid tickets and park with confidence
+    layers:
+      alwaysOn:
+        - 'gis:city_boundary'
+      exclusives:
+        - machineName: 'gis:pw_street_sweeping'
+          name: Street Sweeping Schedule
+          visible: true
+    initialCenter:
+      - 33.778724
+      - -117.960058
+    initialZoom: 13
+    resetViewOnSelect: true
+
+  - machineName: flood-layers
+    name: Flood Layers
+    description: FEMA Flood Hazard Areas
+    layers:
+      alwaysOn:
+        - 'gis:city_boundary'
+      optionals:
+        - machineName: 'gis:flood_loma'
+          name: FEMA Excluded Properties
+          visible: true
+        - machineName: 'gis:flood_hazard_area'
+          name: FEMA Flood Hazard Areas
+          visible: true
+          
+  - machineName: community-development
+    name: Community Development
+    description: 'Code Enforcement, CDBG, Redevelopment, etc'
+    layers:
+      alwaysOn:
+        - 'gis:city_boundary'
+      exclusives:
+        - machineName: 'gis:code_enf_officer_coverage'
+          name: Code Enforcement Coverage
+          visible: true
+        - machineName: 'gis:city_owned_parcels'
+          name: City Owned Parcels
+        - machineName: 'gis:redev'
+          name: Redevelopment Zones
+        - machineName: 'gis:cdbg'
+          name: CDBG
+          
+        - machineName: 'gis:building_open_permits'
+          name: Open Building Permits
+          type: geojson
+          radius: 4
+          weight: 1
+          maxClusterRadius: 120
+          identify: true
+          cluster: true
+
+    initialCenter:
+      - 33.778724
+      - -117.960058
+    initialZoom: 13
+    resetViewOnSelect: true
