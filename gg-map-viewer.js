@@ -4,12 +4,14 @@ import '../../@polymer/paper-toggle-button/paper-toggle-button.js';
 import { LeafletMap } from '../../@ggcity/leaflet-map/leaflet-map.js';
 import { LeafletWMSGroup } from '../../@ggcity/leaflet-wms/leaflet-wms-group.js';
 import { LeafletTileLayer } from '../../@ggcity/leaflet-tile-layer/leaflet-tile-layer.js';
+import { LeafletGeoJSON } from '../../@ggcity/leaflet-geojson/leaflet-geojson-points.js';
+
 
 // wtf
 var yaml = require('../../js-yaml/dist/js-yaml.min.js');
 // wtf2
 import template from './app.template.html';
-
+4
 export class GGMapViewer extends PolymerElement {
   static get template() {
     return template;
@@ -33,11 +35,11 @@ export class GGMapViewer extends PolymerElement {
         type: Object,
         observer: '_overlayChanged'
       },
-      wmsSource: {
-        type: String,
-        value: ''
+      wmsGroups: {
+        type: Array,
+        value: []
       },
-      wmsLayers: {
+      geojsonLayers: {
         type: Array,
         value: []
       },
@@ -61,11 +63,41 @@ export class GGMapViewer extends PolymerElement {
       .then(this.initialize.bind(this));
   }
 
-  initialize(response){
+  initialize(response) {
     let rjson = yaml.safeLoad(response);
 
     this.baseMaps = rjson.baseMaps;
     this.overlayMaps = rjson.overlayMaps;
+
+    // iterate through groups of layers
+    for (let i = 0; i < this.overlayMaps.length; i++) {
+      let l = this.overlayMaps[i].layers;
+      this.overlayMaps[i].flattenedLayers = [];
+
+      // iterate through layer interaction types (always on, exclusives, optionals)
+      for (let t in l) {
+        this.overlayMaps[i].flattenedLayers = this.overlayMaps[i].flattenedLayers.concat(l[t]);
+
+        // iterate through layers
+        for (let j = 0; j < l[t].length; j++) {
+          l[t][j].interaction = t;
+
+          // always on layers should always be visible
+          if (t === 'alwaysOn') {
+            l[t][j].visible = true;
+          }
+          
+          // For convenience, allow source to be globally defined, but propagate it here.
+          if (
+            (l[t][j].type === 'wms' || l[t][j].type === undefined)
+            && l[t][j].source === undefined
+          ) {
+            l[t][j].type = 'wms';
+            l[t][j].source = rjson.wmsDefaultSource;
+          }
+        }
+      }
+    }
 
     // FIXME: hacky hardcoded initial view
     this._selectedBasemap = 0;
@@ -76,11 +108,71 @@ export class GGMapViewer extends PolymerElement {
     this.overlaySelect();
   }
 
-  toggleLayersMenu() {
-    let layersMenu = this.shadowRoot.querySelector('main#layers-menu');
-    layersMenu.classList.toggle('show');
+  _parseLayers(overlay) {
+    console.log('parsing this overlay', overlay);
+
+    let layers = overlay.flattenedLayers;
+    let wmsLayers = {};
+
+    // reset
+    this.wmsGroups = [];
+    this.geojsonLayers = [];
+
+    layers
+    .filter(l => l.visible)
+    .forEach(l => {
+      if (l.type === 'wms') {
+        // group the sources
+        wmsLayers[l.source] = wmsLayers[l.source] || [];
+        wmsLayers[l.source].push(l.machineName);
+      } else if (l.type === 'geojson') {
+        this.push('geojsonLayers', l);
+      }
+    });
+
+    // flattened the grouped WMS sources
+    for (let s in wmsLayers) {
+      this.push('wmsGroups', { source: s, layers: wmsLayers[s] });
+    }
+
+    console.log('wmsGroups', this.wmsGroups);
+    console.log('geojsonLayers', this.geojsonLayers);
   }
-  
+
+  toggleLayer(event) {
+    // First save the current state
+    let currVisible = event.model.layer.visible;
+
+    if (event.model.layer.interaction === 'exclusives') {
+      // Turn all exclusive layers off
+      for(let i = 0; i < this.selectedOverlay.layers.exclusives.length; i++) {
+        this.set('selectedOverlay.layers.exclusives.' + i + '.visible', false);
+      }
+    }
+
+    // Compute toggle on original state
+    event.model.set('layer.visible', !currVisible);
+
+    this._parseLayers(this.selectedOverlay);
+  }
+
+  _isCurrentExclusive(layer) {
+    return layer.visible;
+  }
+
+  overlaySelect(event) {
+    this.selectedOverlay = (event) ? event.model.item : this.overlayMaps[0];
+
+    if (this.selectedOverlay.resetViewOnSelect) {
+      this.map.flyTo(this.selectedOverlay.initialCenter, this.selectedOverlay.initialZoom);
+    }
+  }
+
+  _overlayChanged(newOverlay) {
+    console.log('overlay changed fired');
+    this._parseLayers(newOverlay);
+  }
+
   // FIXE: Achtung! Uber hacky!!!
   switchBasemap(event) {
     let idx = ++this._selectedBasemap % 2;
@@ -93,73 +185,6 @@ export class GGMapViewer extends PolymerElement {
     } else {
       event.target.style.backgroundImage = "url(./aerial.png)";
     }
-  }
-
-  overlaySelect(event) {
-    this.selectedOverlay = (event) ? event.model.item : this.overlayMaps[0];
-
-    if (this.selectedOverlay.resetViewOnSelect) {
-      this.map.flyTo(this.selectedOverlay.initialCenter, this.selectedOverlay.initialZoom);
-    }
-  }
-  // FIXME: what if you were in other overlay and select another overlay's layer?
-  exclusiveSelect(event) {
-    // First save the current state
-    let currVisible = event.model.layer.visible;
-    // Then turn all layers off
-    this.selectedOverlay.layers.exclusives.forEach(e => e.visible = false);
-    // Compute toggle on original state
-    event.model.layer.visible = !currVisible;
-
-    // Refresh layers list
-    this.wmsLayers = this._computeOverlaysList(this.selectedOverlay.layers);
-  }
-
-  // FIXME: this depends on wmsLayer to trigger re-evaluation :(
-  // We should be using this.set instead
-  _isCurrentExclusive(layer) {
-    return layer.visible;
-  }
-  
-  optionalSelect(event) {
-    event.model.set('layer.visible', !event.model.layer.visible);
-    this.wmsLayers = this._computeOverlaysList(this.selectedOverlay.layers);    
-  }
-
-  _overlayChanged(newOverlay) {
-    let layers = newOverlay.layers;
-
-    // Update wms-group
-    this.wmsSource = newOverlay.source;
-    this.wmsLayers = this._computeOverlaysList(layers);
-  }
-
-  _computeOverlaysList(layers) {
-    let result = [];
-
-    // first tack on alwaysOn layers by default
-    if (layers.alwaysOn) {
-      result.push(...layers.alwaysOn.reverse());
-    }
-
-    // now tack on the ONE exclusive
-    if (layers.exclusives) {
-      let e = layers.exclusives.find(l => l.visible);
-      if (e) result.push(e.machineName);
-    }
-
-    // then the rest of the optionals
-    // machineName of all visible optional layers
-    if (layers.optionals) {
-      result.push(
-        ...layers.optionals
-        .filter(l => l.visible)
-        .map(l => l.machineName)
-        .reverse()
-      );
-    }
-
-    return result;
   }
 
   _isCurrentOverlay(selected, item) {
@@ -177,6 +202,11 @@ export class GGMapViewer extends PolymerElement {
     return defaultClass;
   }
 
+  toggleLayersMenu() {
+    let layersMenu = this.shadowRoot.querySelector('main#layers-menu');
+    layersMenu.classList.toggle('show');
+  }
+
   downloadLayer(event) {
     event.stopPropagation();
     event.preventDefault();
@@ -192,7 +222,7 @@ export class GGMapViewer extends PolymerElement {
     jQuery('#geojson-download', dom).attr('href', downloadURL + '&outputFormat=application/json');
     jQuery('#csv-download', dom).attr('href', downloadURL + '&outputFormat=csv');
     jQuery('#kml-download', dom).attr('href', downloadURL + '&outputFormat=application/vnd.google-earth.kml+xml');
-    jQuery('#shapefile-download', dom).attr('href', downloadURL + '&outputFormat=SHAPE-ZIP');    
+    jQuery('#shapefile-download', dom).attr('href', downloadURL + '&outputFormat=SHAPE-ZIP');
     jQuery('#download-modal', dom).modal();
   }
 }

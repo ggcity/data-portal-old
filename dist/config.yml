@@ -32,7 +32,7 @@ overlayMaps:
     description: Council districts and State Senate / Congressional / Assembly districts
     layers:
       alwaysOn:
-        - 'gis:city_boundary'
+        - machineName: 'gis:city_boundary'
       exclusives:
         - machineName: 'gis:city_council_districts'
           name: City Council Districts
@@ -54,7 +54,7 @@ overlayMaps:
     description: Find your trash pickup day
     layers:
       alwaysOn:
-        - 'gis:city_boundary'
+        - machineName: 'gis:city_boundary'
       exclusives:
         - machineName: 'gis:pw_trash_pickup'
           name: Trash Pickup Schedule
@@ -70,7 +70,7 @@ overlayMaps:
     description: Avoid tickets and park with confidence
     layers:
       alwaysOn:
-        - 'gis:city_boundary'
+        - machineName: 'gis:city_boundary'
       exclusives:
         - machineName: 'gis:pw_street_sweeping'
           name: Street Sweeping Schedule
@@ -86,7 +86,7 @@ overlayMaps:
     description: FEMA Flood Hazard Areas
     layers:
       alwaysOn:
-        - 'gis:city_boundary'
+        - machineName: 'gis:city_boundary'
       optionals:
         - machineName: 'gis:flood_loma'
           name: FEMA Excluded Properties
@@ -100,7 +100,7 @@ overlayMaps:
     description: 'Code Enforcement, CDBG, Redevelopment, etc'
     layers:
       alwaysOn:
-        - 'gis:city_boundary'
+        - machineName: 'gis:city_boundary'
       exclusives:
         - machineName: 'gis:code_enf_officer_coverage'
           name: Code Enforcement Coverage
@@ -113,6 +113,7 @@ overlayMaps:
           name: CDBG
           
         - machineName: 'gis:building_open_permits'
+          source: //www.ci.garden-grove.ca.us/geoserver/gis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=gis:building_open_permits&outputFormat=application%2Fjson&srsName=EPSG:4326
           name: Open Building Permits
           type: geojson
           radius: 4
