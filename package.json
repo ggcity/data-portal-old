@@ -18,5 +18,8 @@
   },
   "devDependencies": {
     "leaflet": "^1.2.0"
+  },
+  "resolutions": {
+    "@polymer/polymer": "3.0.0-pre.1"
   }
 }
