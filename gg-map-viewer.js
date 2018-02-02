@@ -6,12 +6,11 @@ import { LeafletWMSGroup } from '../../@ggcity/leaflet-wms/leaflet-wms-group.js'
 import { LeafletTileLayer } from '../../@ggcity/leaflet-tile-layer/leaflet-tile-layer.js';
 import { LeafletGeoJSON } from '../../@ggcity/leaflet-geojson/leaflet-geojson-points.js';
 
-
 // wtf
 var yaml = require('../../js-yaml/dist/js-yaml.min.js');
 // wtf2
 import template from './app.template.html';
-4
+
 export class GGMapViewer extends PolymerElement {
   static get template() {
     return template;
@@ -78,7 +77,7 @@ export class GGMapViewer extends PolymerElement {
       for (let t in l) {
         this.overlayMaps[i].flattenedLayers = this.overlayMaps[i].flattenedLayers.concat(l[t]);
 
-        // iterate through layers
+        // iterate through all layers
         for (let j = 0; j < l[t].length; j++) {
           l[t][j].interaction = t;
 
@@ -109,14 +108,12 @@ export class GGMapViewer extends PolymerElement {
   }
 
   _parseLayers(overlay) {
-    console.log('parsing this overlay', overlay);
-
     let layers = overlay.flattenedLayers;
     let wmsLayers = {};
 
     // reset
-    this.wmsGroups = [];
-    this.geojsonLayers = [];
+    this.set('wmsGroups', []);
+    this.set('geojsonLayers', []);
 
     layers
     .filter(l => l.visible)
@@ -134,9 +131,6 @@ export class GGMapViewer extends PolymerElement {
     for (let s in wmsLayers) {
       this.push('wmsGroups', { source: s, layers: wmsLayers[s] });
     }
-
-    console.log('wmsGroups', this.wmsGroups);
-    console.log('geojsonLayers', this.geojsonLayers);
   }
 
   toggleLayer(event) {
@@ -169,7 +163,6 @@ export class GGMapViewer extends PolymerElement {
   }
 
   _overlayChanged(newOverlay) {
-    console.log('overlay changed fired');
     this._parseLayers(newOverlay);
   }
 

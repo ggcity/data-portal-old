@@ -21,10 +21,6 @@ module.exports = {
       { 
         test: /\.js$/, 
         loader: "babel-loader",
-        include: [
-          path.join(__dirname, '..'),
-          /\/node_modules\/@polymer/
-        ],
         options: {
           presets: [
             'babel-preset-env'
