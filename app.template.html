@@ -1,11 +1,12 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M"
   crossorigin="anonymous">
 <link href="https://fonts.googleapis.com/css?family=Lato:300,400,400i,900" rel="stylesheet">
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+  crossorigin="anonymous">
 
 
 <style>
-  :host {
+   :host {
     font-family: 'Lato', sans-serif;
     --primary-color: #003d7d;
     --secondary-color: #ff4b5f;
@@ -20,7 +21,7 @@
     z-index: 1005;
 
     background-color: #fff;
-    box-shadow: 0 8px 10px 1px rgba(0,0,0,0.14),0 3px 14px 2px rgba(0,0,0,0.12),0 5px 5px -3px rgba(0,0,0,0.3);
+    box-shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12), 0 5px 5px -3px rgba(0, 0, 0, 0.3);
 
     transition: transform 175ms;
   }
@@ -51,7 +52,7 @@
     padding-bottom: 5px;
   }
 
-  section#overlays > ul > li.list-group-item {
+  section#overlays>ul>li.list-group-item {
     padding: 0;
   }
 
@@ -69,13 +70,13 @@
   section#overlays .overlay-item.selected {
     background-color: #ddd;
     color: var(--primary-color);
-    
+
     /* left border and offset text back */
     border-left: 0.25rem solid var(--primary-color);
     padding-left: 1rem;
   }
 
-  ul.overlay-layers > li.list-group-item {
+  ul.overlay-layers>li.list-group-item {
     border: 0;
     border-left: 0.25rem solid var(--primary-color);
     padding-left: 1.75rem;
@@ -87,14 +88,15 @@
     --primary-color: var(--secondary-color);
   }
 
-  button#basemap-switcher, button#layers-menu-toggle {
+  button#basemap-switcher,
+  button#layers-menu-toggle {
     position: absolute;
     right: 30px;
     width: 160px;
     height: 90px;
     z-index: 1001;
     border: 5px solid #ffffff;
-    box-shadow: 0 8px 10px 1px rgba(0,0,0,0.14),0 3px 14px 2px rgba(0,0,0,0.12),0 5px 5px -3px rgba(0,0,0,0.3);
+    box-shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12), 0 5px 5px -3px rgba(0, 0, 0, 0.3);
     cursor: pointer;
   }
 
@@ -136,7 +138,8 @@
       display: block;
     }
 
-    button#basemap-switcher, button#layers-menu-toggle {
+    button#basemap-switcher,
+    button#layers-menu-toggle {
       display: block;
       width: 90px;
       height: 90px;
@@ -151,7 +154,7 @@
   <header id="page-title" class="card-img-top d-flex align-items-end">
     <h1 class="h2">City of Garden Grove Public Maps</h1>
   </header>
-  
+
   <!-- Search section -->
   <section id="search-section" class="input-group">
     <input type="text" name="search" id="search" class="form-control rounded-0" placeholder="Search address">
@@ -185,10 +188,10 @@
                   <span class="mr-auto">
                     [[layer.name]]
                   </span>
-                  <a href="#" on-click="downloadLayer" class="justify-self-end"><i title="Download [[layer.name]]" class="fa fa-fw fa-download"></i></a>                  
+                  <a href="#" on-click="downloadLayer" class="justify-self-end"><i title="Download [[layer.name]]" class="fa fa-fw fa-download"></i></a>
                 </li>
               </template>
-              
+
               <!-- Optional layers -->
               <template is="dom-repeat" items="{{item.layers.optionals}}" as="layer">
                 <li class="list-group-item d-flex justify-content-start" on-click="toggleLayer">
@@ -199,7 +202,7 @@
                   <a href="#" on-click="downloadLayer" class="justify-self-end"><i title="Download [[layer.name]]" class="fa fa-fw fa-download"></i></a>
                 </li>
               </template>
-              
+
             </ul>
           </div>
 
@@ -208,7 +211,7 @@
 
     </ul>
   </section>
-  
+
   <footer class="card-body">
     <a href="#" class="btn btn-link">Help</a>
     <a href="#" class="btn btn-link">Tour</a>
@@ -227,48 +230,22 @@
 <!-- Layers control menu (mobile only) -->
 <button id="layers-menu-toggle" class="btn btn-primary" on-click="toggleLayersMenu"><i class="fa fa-map fa-3x"></i></button>
 
-<leaflet-map
-  map="{{map}}"
-  latitude="33.778724"
-  longitude="-117.960058"
-  zoom="13"
-  min-zoom="11"
-  max-zoom="19"
-  attribution-prefix="City of Garden Grove">
+<leaflet-map map="{{map}}" latitude="33.778724" longitude="-117.960058" zoom="13" min-zoom="11" max-zoom="19" attribution-prefix="City of Garden Grove">
 
   <template is="dom-if" if="{{baseSource}}" restamp>
-    <leaflet-tile-layer
-      map="{{map}}"
-      url="[[baseSource]]"
-      format="[[baseFormat]]"
-      layers="[[baseLayers]]"
-      attribution="&copy; OpenStreetMap">
+    <leaflet-tile-layer map="{{map}}" url="[[baseSource]]" format="[[baseFormat]]" layers="[[baseLayers]]" attribution="&copy; OpenStreetMap">
     </leaflet-tile-layer>
   </template>
 
   <template is="dom-repeat" items="{{wmsGroups}}" as="group">
-    <leaflet-wms-group
-      map="{{map}}"
-      source="[[group.source]]"
-      layers="[[group.layers]]"
-      transparent
-      format="image/png">
+    <leaflet-wms-group map="{{map}}" source="[[group.source]]" layers="[[group.layers]]" transparent format="image/png">
     </leaflet-wms-group>
   </template>
 
   <template is="dom-repeat" items="{{geojsonLayers}}" as="layer">
-    <leaflet-geojson-points
-      map="{{map}}"
-      source$="[[layer.source]]"
-      radius$="[[layer.radius]]"
-      weight$="[[layer.weight]]"
-      max-cluster-radius$="[[layer.maxClusterRadius]]"
-      fill-color$="[[layer.fillColor]]"
-      outline-color$="[[layer.outlineColor]]"
-      opacity$="[[layer.opacity]]"
-      identify$="[[layer.identify]]"
-      attribution$="[[layer.attribution]]"
-      cluster$="[[layer.cluster]]">
+    <leaflet-geojson-points map="{{map}}" source$="[[layer.source]]" radius$="[[layer.radius]]" weight$="[[layer.weight]]" max-cluster-radius$="[[layer.maxClusterRadius]]"
+      fill-color$="[[layer.fillColor]]" outline-color$="[[layer.outlineColor]]" opacity$="[[layer.opacity]]" identify$="[[layer.identify]]"
+      attribution$="[[layer.attribution]]" cluster$="[[layer.cluster]]">
     </leaflet-geojson-points>
   </template>
 </leaflet-map>
@@ -288,12 +265,30 @@
       <div class="modal-body">
         <section style="height: 400px; overflow: auto; padding: 10px; background-color: #eee; font-size: 0.85rem;">
           <h5>Download Disclaimer</h5>
-          
-          <p>The City of Garden Grove provides the data as a public resource of general information for use "as is." The City of Garden Grove provides this information with the understanding that it is not guaranteed to be accurate, correct or complete and any conclusions drawn from such information are the sole responsibility of the user. Further, the City of Garden Grove makes no warranty, representation or guaranty as to the content, sequence, accuracy, timeliness or completeness of any of the spatial or database information provided herein. While every effort has been made to ensure the content, sequence, accuracy, timeliness or completeness of materials presented within these pages, the City of Garden Grove assumes no responsibility for errors or omissions, and explicitly disclaims any representations and warranties, including, without limitation, the implied warranties of merchantability and fitness for a particular purpose. The City of Garden Grove shall assume no liability for:</p>                
-          <p>1.Any errors, omissions, or inaccuracies in the information provided, regardless of how caused; or 2.Any decision made or action taken or not taken by viewer in reliance upon any information or data furnished hereunder.</p>                
-          <p>Availability of the City of Garden Grove GIS is not guaranteed. Applications, servers, and network connections may be unavailable at any time for maintenance or unscheduled outages. Outages may be of long duration. Users are cautioned to create dependencies on these services for critical needs.</p>
-          <p>THE FOREGOING WARRANTY IS EXCLUSIVE AND IN LIEU OF ALL OTHER WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND/OR ANY OTHER TYPE WHETHER EXPRESSED OR IMPLIED. In no event shall The City of Garden Grove become liable to users of these data, or any other party, for any loss or direct, indirect, special, incidental or consequential damages, including, but not limited to, time, money or goodwill, arising from the use or modification of the data.</p>                
-          <p>To assist The City of Garden Grove in the maintenance and/or correction of the data, users should provide the City of Garden Grove with information concerning errors or discrepancies found in using the data. Please acknowledge the City of Garden Grove as the source when data is used in the preparation of reports, papers, publications, maps, or other products.</p>
+
+          <p>The City of Garden Grove provides the data as a public resource of general information for use "as is." The City
+            of Garden Grove provides this information with the understanding that it is not guaranteed to be accurate, correct
+            or complete and any conclusions drawn from such information are the sole responsibility of the user. Further,
+            the City of Garden Grove makes no warranty, representation or guaranty as to the content, sequence, accuracy,
+            timeliness or completeness of any of the spatial or database information provided herein. While every effort
+            has been made to ensure the content, sequence, accuracy, timeliness or completeness of materials presented within
+            these pages, the City of Garden Grove assumes no responsibility for errors or omissions, and explicitly disclaims
+            any representations and warranties, including, without limitation, the implied warranties of merchantability
+            and fitness for a particular purpose. The City of Garden Grove shall assume no liability for:</p>
+          <p>1.Any errors, omissions, or inaccuracies in the information provided, regardless of how caused; or 2.Any decision
+            made or action taken or not taken by viewer in reliance upon any information or data furnished hereunder.</p>
+          <p>Availability of the City of Garden Grove GIS is not guaranteed. Applications, servers, and network connections
+            may be unavailable at any time for maintenance or unscheduled outages. Outages may be of long duration. Users
+            are cautioned to create dependencies on these services for critical needs.</p>
+          <p>THE FOREGOING WARRANTY IS EXCLUSIVE AND IN LIEU OF ALL OTHER WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR
+            PURPOSE AND/OR ANY OTHER TYPE WHETHER EXPRESSED OR IMPLIED. In no event shall The City of Garden Grove become
+            liable to users of these data, or any other party, for any loss or direct, indirect, special, incidental or consequential
+            damages, including, but not limited to, time, money or goodwill, arising from the use or modification of the
+            data.</p>
+          <p>To assist The City of Garden Grove in the maintenance and/or correction of the data, users should provide the City
+            of Garden Grove with information concerning errors or discrepancies found in using the data. Please acknowledge
+            the City of Garden Grove as the source when data is used in the preparation of reports, papers, publications,
+            maps, or other products.</p>
         </section>
       </div>
       <div class="modal-footer">
