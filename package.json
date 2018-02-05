@@ -14,9 +14,12 @@
     "@ggcity/leaflet-wms": "^0.4.0",
     "@polymer/paper-toggle-button": "PolymerElements/paper-toggle-button#3.0-preview",
     "@polymer/polymer": "3.0.0-pre.1",
+    "leaflet": "^1.2.0",
     "js-yaml": "^3.10.0"
   },
   "devDependencies": {
-    "leaflet": "^1.2.0"
+  },
+  "resolutions": {
+    "@polymer/polymer": "3.0.0-pre.1"
   }
 }

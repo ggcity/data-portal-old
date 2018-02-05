@@ -1,14 +1,18 @@
 import { Element as PolymerElement } from '../../@polymer/polymer/polymer-element.js';
 import '../../@polymer/paper-toggle-button/paper-toggle-button.js';
 
+import { FeatureGroup } from '../../leaflet/src/layer/FeatureGroup.js';
+import { Marker } from '../../leaflet/src/layer/marker/Marker.js';
+import { Icon } from '../../leaflet/src/layer/marker/Icon.js';
+import icon from '../../leaflet/dist/images/marker-icon.png';
+import iconShadow from '../../leaflet/dist/images/marker-shadow.png';
+
 import { LeafletMap } from '../../@ggcity/leaflet-map/leaflet-map.js';
 import { LeafletWMSGroup } from '../../@ggcity/leaflet-wms/leaflet-wms-group.js';
 import { LeafletTileLayer } from '../../@ggcity/leaflet-tile-layer/leaflet-tile-layer.js';
 import { LeafletGeoJSON } from '../../@ggcity/leaflet-geojson/leaflet-geojson-points.js';
 
-// wtf
 var yaml = require('../../js-yaml/dist/js-yaml.min.js');
-// wtf2
 import template from './app.template.html';
 
 export class GGMapViewer extends PolymerElement {
@@ -47,22 +51,31 @@ export class GGMapViewer extends PolymerElement {
       },
       overlayMaps: {
         type: Array
+      },
+      searchMarkers: {
+        type: Array,
+        value: [],
+        observer: '_markMap'
       }
     }
   }
 
   constructor() {
     super();
+
+    this._markersGroup = new FeatureGroup([]);
   }
 
   connectedCallback() {
     super.connectedCallback();
 
     fetch(this.config).then(r => r.text())
-      .then(this.initialize.bind(this));
+      .then(this.initializeMap.bind(this));
+
+    this.initializeSearch();
   }
 
-  initialize(response) {
+  initializeMap(response) {
     let rjson = yaml.safeLoad(response);
 
     this.baseMaps = rjson.baseMaps;
@@ -85,7 +98,7 @@ export class GGMapViewer extends PolymerElement {
           if (t === 'alwaysOn') {
             l[t][j].visible = true;
           }
-          
+
           // For convenience, allow source to be globally defined, but propagate it here.
           if (
             (l[t][j].type === 'wms' || l[t][j].type === undefined)
@@ -107,30 +120,26 @@ export class GGMapViewer extends PolymerElement {
     this.overlaySelect();
   }
 
-  _parseLayers(overlay) {
-    let layers = overlay.flattenedLayers;
-    let wmsLayers = {};
+  initializeSearch() {
+    this._markersGroup.addTo(this.map);
 
-    // reset
-    this.set('wmsGroups', []);
-    this.set('geojsonLayers', []);
-
-    layers
-    .filter(l => l.visible)
-    .forEach(l => {
-      if (l.type === 'wms') {
-        // group the sources
-        wmsLayers[l.source] = wmsLayers[l.source] || [];
-        wmsLayers[l.source].push(l.machineName);
-      } else if (l.type === 'geojson') {
-        this.push('geojsonLayers', l);
-      }
+    jQuery('#search', this.shadowRoot).autocomplete({
+      preventBadQueries: false,
+      deferRequestBy: 200,
+      minChars: 3,
+      serviceUrl: '//www.ci.garden-grove.ca.us/maps/api/addresses/search',
+      paramName: 'q',
+      // params: { limit: 10 },
+      transformResult: function (response) {
+        let addresses = JSON.parse(response).addresses;
+        return {
+          suggestions: addresses.map(d => ({ value: d.address, data: d }))
+        }
+      },
+      onSearchStart: () => this.set('searchMakers', []),
+      onSearchComplete: (q, s) => this.set('searchMarkers', s.map( obj => [obj.data.latitude, obj.data.longitude] )),
+      onSelect: obj => this.set('searchMarkers', [[obj.data.latitude, obj.data.longitude]])
     });
-
-    // flattened the grouped WMS sources
-    for (let s in wmsLayers) {
-      this.push('wmsGroups', { source: s, layers: wmsLayers[s] });
-    }
   }
 
   toggleLayer(event) {
@@ -139,7 +148,7 @@ export class GGMapViewer extends PolymerElement {
 
     if (event.model.layer.interaction === 'exclusives') {
       // Turn all exclusive layers off
-      for(let i = 0; i < this.selectedOverlay.layers.exclusives.length; i++) {
+      for (let i = 0; i < this.selectedOverlay.layers.exclusives.length; i++) {
         this.set('selectedOverlay.layers.exclusives.' + i + '.visible', false);
       }
     }
@@ -150,20 +159,12 @@ export class GGMapViewer extends PolymerElement {
     this._parseLayers(this.selectedOverlay);
   }
 
-  _isCurrentExclusive(layer) {
-    return layer.visible;
-  }
-
   overlaySelect(event) {
     this.selectedOverlay = (event) ? event.model.item : this.overlayMaps[0];
 
     if (this.selectedOverlay.resetViewOnSelect) {
       this.map.flyTo(this.selectedOverlay.initialCenter, this.selectedOverlay.initialZoom);
     }
-  }
-
-  _overlayChanged(newOverlay) {
-    this._parseLayers(newOverlay);
   }
 
   // FIXE: Achtung! Uber hacky!!!
@@ -180,8 +181,60 @@ export class GGMapViewer extends PolymerElement {
     }
   }
 
+  toggleLayersMenu() {
+    let layersMenu = this.shadowRoot.querySelector('main#layers-menu');
+    layersMenu.classList.toggle('show');
+  }
+
+  _parseLayers(overlay) {
+    let layers = overlay.flattenedLayers;
+    let wmsLayers = {};
+
+    // reset
+    this.set('wmsGroups', []);
+    this.set('geojsonLayers', []);
+
+    layers
+      .filter(l => l.visible)
+      .forEach(l => {
+        if (l.type === 'wms') {
+          // group the sources
+          wmsLayers[l.source] = wmsLayers[l.source] || [];
+          wmsLayers[l.source].push(l.machineName);
+        } else if (l.type === 'geojson') {
+          this.push('geojsonLayers', l);
+        }
+      });
+
+    // flattened the grouped WMS sources
+    for (let s in wmsLayers) {
+      this.push('wmsGroups', { source: s, layers: wmsLayers[s] });
+    }
+  }
+
+  _markMap(markersCoords) {
+    this._markersGroup.clearLayers();
+    if (markersCoords.length === 0) return;
+
+    markersCoords.forEach(m => {
+      this._markersGroup
+      .addLayer(new Marker(m, { icon: new Icon({ iconUrl: icon, shadowUrl: iconShadow })}))
+    });
+    
+    if (markersCoords.length === 1) this.map.flyTo(markersCoords[0]);
+    else this.map.fitBounds(this._markersGroup.getBounds());
+  }
+
+  _isCurrentExclusive(layer) {
+    return layer.visible;
+  }
+
   _isCurrentOverlay(selected, item) {
     return selected === item;
+  }
+
+  _overlayChanged(newOverlay) {
+    this._parseLayers(newOverlay);
   }
 
   _overlayLayersShow(selected, item) {
@@ -195,11 +248,7 @@ export class GGMapViewer extends PolymerElement {
     return defaultClass;
   }
 
-  toggleLayersMenu() {
-    let layersMenu = this.shadowRoot.querySelector('main#layers-menu');
-    layersMenu.classList.toggle('show');
-  }
-
+  // FIXME: make this less hardcodey
   downloadLayer(event) {
     event.stopPropagation();
     event.preventDefault();

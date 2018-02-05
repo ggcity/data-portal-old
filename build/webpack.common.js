@@ -13,7 +13,8 @@ module.exports = {
       '../../@polymer': path.resolve(__dirname, '../node_modules/@polymer'),
       '../../leaflet':  path.resolve(__dirname, '../node_modules/leaflet'),
       '../../leaflet.markercluster': path.resolve(__dirname, '../node_modules/leaflet.markercluster'),
-      '../../js-yaml':  path.resolve(__dirname, '../node_modules/js-yaml')
+      '../../js-yaml':  path.resolve(__dirname, '../node_modules/js-yaml'),
+      '../../rxjs': path.resolve(__dirname, '../node_modules/rxjs')
     }
   },
   module: {
