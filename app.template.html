@@ -248,7 +248,7 @@
 
   <template is="dom-repeat" items="{{geojsonLayers}}" as="layer">
     <leaflet-geojson-points map="{{map}}" source$="[[layer.source]]" radius$="[[layer.radius]]" weight$="[[layer.weight]]" max-cluster-radius$="[[layer.maxClusterRadius]]"
-      fill-color$="[[layer.fillColor]]" outline-color$="[[layer.outlineColor]]" opacity$="[[layer.opacity]]" identify$="[[layer.identify]]"
+      fill-color$="[[layer.fillColor]]" outline-color$="[[layer.outlineColor]]" opacity$="[[layer.opacity]]" fill-opacity$="[[layer.fillOpacity]]" identify$="[[layer.identify]]"
       attribution$="[[layer.attribution]]" cluster$="[[layer.cluster]]">
     </leaflet-geojson-points>
   </template>
