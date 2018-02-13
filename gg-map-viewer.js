@@ -25,6 +25,10 @@ export class GGMapViewer extends PolymerElement {
       config: {
         type: String
       },
+      mapTitle: {
+        type: String,
+        value: 'City of Garden Grove Public Maps'
+      },
       map: {
         type: Object
       },
