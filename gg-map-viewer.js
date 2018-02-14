@@ -157,8 +157,10 @@ export class GGMapViewer extends PolymerElement {
         }
       },
       onSearchStart: () => this.set('searchMakers', []),
-      onSearchComplete: (q, s) => this.set('searchMarkers', s.map(obj => [obj.data.latitude, obj.data.longitude])),
-      onSelect: obj => this.set('searchMarkers', [[obj.data.latitude, obj.data.longitude]])
+      onSearchComplete: (q, s) => this.set('searchMarkers', s.map(obj => (
+        { coords: [obj.data.latitude, obj.data.longitude], address: obj.data.address }
+      ))),
+      onSelect: obj => this.set('searchMarkers', [{ coords: [obj.data.latitude, obj.data.longitude], address: obj.data.address }])
     });
   }
 
@@ -232,13 +234,13 @@ export class GGMapViewer extends PolymerElement {
     }
   }
 
-  _markMap(markersCoords) {
+  _markMap(markersData) {
     this._markersGroup.clearLayers();
-    if (markersCoords.length === 0) return;
+    if (markersData.length === 0) return;
 
-    markersCoords.forEach(m => {
+    markersData.forEach(m => {
       this._markersGroup
-        .addLayer(new Marker(m, {
+        .addLayer(new Marker(m.coords, {
           icon: new Icon({
             iconUrl: icon,
             shadowUrl: iconShadow,
@@ -248,10 +250,10 @@ export class GGMapViewer extends PolymerElement {
             tooltipAnchor: [16, -28],
             shadowSize: [41, 41]
           })
-        }))
+        }).bindPopup(m.address))
     });
 
-    if (markersCoords.length === 1) this.map.flyTo(markersCoords[0]);
+    if (markersData.length === 1) this.map.flyTo(markersData[0].coords);
     else this.map.fitBounds(this._markersGroup.getBounds());
   }
 
