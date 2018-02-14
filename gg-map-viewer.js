@@ -29,6 +29,10 @@ export class GGMapViewer extends PolymerElement {
         type: String,
         value: 'City of Garden Grove Public Maps'
       },
+      flat: {
+        type: Boolean,
+        value: false,
+      },
       map: {
         type: Object
       },
@@ -84,6 +88,18 @@ export class GGMapViewer extends PolymerElement {
 
     this.baseMaps = rjson.baseMaps;
     this.overlayMaps = rjson.overlayMaps;
+
+    if (this.flat && this.overlayMaps.length > 1) {
+      console.error('You cannot enable flat mode with multiple overlays at this time.');
+    }
+
+    if (this.overlayMaps.length === 1) {
+      this.flat = true;
+    }
+
+    if (rjson.mapTitle) {
+      this.mapTitle = rjson.mapTitle;
+    }
 
     // iterate through groups of layers
     for (let i = 0; i < this.overlayMaps.length; i++) {
@@ -242,7 +258,7 @@ export class GGMapViewer extends PolymerElement {
   }
 
   _overlayLayersShow(selected, item) {
-    if (selected === item) return "collapse show";
+    if (selected === item || this.flat) return "collapse show";
     return "collapse";
   }
 
