@@ -156,7 +156,7 @@
 
 <main id="layers-menu" class="card">
   <header id="page-title" class="card-img-top d-flex align-items-end">
-    <h1 class="h2">City of Garden Grove Public Maps</h1>
+    <h1 class="h2">[[mapTitle]]</h1>
   </header>
 
   <!-- Search section -->
@@ -177,10 +177,12 @@
         <li class="list-group-item">
 
           <!-- Main overlay toggle -->
-          <div title="[[item.description]]" class$="[[_overlayItemClass(selectedOverlay, item)]]" on-click="overlaySelect">
-            <paper-toggle-button checked="[[_isCurrentOverlay(selectedOverlay, item)]]"></paper-toggle-button>
-            <span>[[item.name]]</span>
-          </div>
+          <template is="dom-if" if="{{!flat}}">
+            <div title="[[item.description]]" class$="[[_overlayItemClass(selectedOverlay, item)]]" on-click="overlaySelect">
+              <paper-toggle-button checked="[[_isCurrentOverlay(selectedOverlay, item)]]"></paper-toggle-button>
+              <span>[[item.name]]</span>
+            </div>
+          </template>
 
           <div class$="[[_overlayLayersShow(selectedOverlay, item)]]">
             <ul class="overlay-layers list-group list-group-flush">
@@ -288,7 +290,8 @@
             PURPOSE AND/OR ANY OTHER TYPE WHETHER EXPRESSED OR IMPLIED. In no event shall The City of Garden Grove become
             liable to users of these data, or any other party, for any loss or direct, indirect, special, incidental or consequential
             damages, including, but not limited to, time, money or goodwill, arising from the use or modification of the
-            data.</p>
+            data.
+          </p>
           <p>To assist The City of Garden Grove in the maintenance and/or correction of the data, users should provide the City
             of Garden Grove with information concerning errors or discrepancies found in using the data. Please acknowledge
             the City of Garden Grove as the source when data is used in the preparation of reports, papers, publications,

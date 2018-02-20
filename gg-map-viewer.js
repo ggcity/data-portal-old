@@ -25,6 +25,14 @@ export class GGMapViewer extends PolymerElement {
       config: {
         type: String
       },
+      mapTitle: {
+        type: String,
+        value: 'City of Garden Grove Public Maps'
+      },
+      flat: {
+        type: Boolean,
+        value: false,
+      },
       map: {
         type: Object
       },
@@ -80,6 +88,18 @@ export class GGMapViewer extends PolymerElement {
 
     this.baseMaps = rjson.baseMaps;
     this.overlayMaps = rjson.overlayMaps;
+
+    if (this.flat && this.overlayMaps.length > 1) {
+      console.error('You cannot enable flat mode with multiple overlays at this time.');
+    }
+
+    if (this.overlayMaps.length === 1) {
+      this.flat = true;
+    }
+
+    if (rjson.mapTitle) {
+      this.mapTitle = rjson.mapTitle;
+    }
 
     // iterate through groups of layers
     for (let i = 0; i < this.overlayMaps.length; i++) {
@@ -137,8 +157,10 @@ export class GGMapViewer extends PolymerElement {
         }
       },
       onSearchStart: () => this.set('searchMakers', []),
-      onSearchComplete: (q, s) => this.set('searchMarkers', s.map( obj => [obj.data.latitude, obj.data.longitude] )),
-      onSelect: obj => this.set('searchMarkers', [[obj.data.latitude, obj.data.longitude]])
+      onSearchComplete: (q, s) => this.set('searchMarkers', s.map(obj => (
+        { coords: [obj.data.latitude, obj.data.longitude], address: obj.data.address }
+      ))),
+      onSelect: obj => this.set('searchMarkers', [{ coords: [obj.data.latitude, obj.data.longitude], address: obj.data.address }])
     });
   }
 
@@ -212,16 +234,26 @@ export class GGMapViewer extends PolymerElement {
     }
   }
 
-  _markMap(markersCoords) {
+  _markMap(markersData) {
     this._markersGroup.clearLayers();
-    if (markersCoords.length === 0) return;
+    if (markersData.length === 0) return;
 
-    markersCoords.forEach(m => {
+    markersData.forEach(m => {
       this._markersGroup
-      .addLayer(new Marker(m, { icon: new Icon({ iconUrl: icon, shadowUrl: iconShadow })}))
+        .addLayer(new Marker(m.coords, {
+          icon: new Icon({
+            iconUrl: icon,
+            shadowUrl: iconShadow,
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            tooltipAnchor: [16, -28],
+            shadowSize: [41, 41]
+          })
+        }).bindPopup(m.address))
     });
-    
-    if (markersCoords.length === 1) this.map.flyTo(markersCoords[0]);
+
+    if (markersData.length === 1) this.map.flyTo(markersData[0].coords);
     else this.map.fitBounds(this._markersGroup.getBounds());
   }
 
@@ -238,7 +270,7 @@ export class GGMapViewer extends PolymerElement {
   }
 
   _overlayLayersShow(selected, item) {
-    if (selected === item) return "collapse show";
+    if (selected === item || this.flat) return "collapse show";
     return "collapse";
   }
 
