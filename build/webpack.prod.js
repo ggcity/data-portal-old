@@ -7,7 +7,7 @@ const MinifyPlugin = require("babel-minify-webpack-plugin");
 
 module.exports = merge(common, {
   output: {
-    filename: 'map-viewer.js',
+    filename: 'gg-map-viewer.js',
     path: path.resolve(__dirname, '../dist')
   },
   plugins: [
