@@ -1,6 +1,6 @@
 {
   "name": "@ggcity/map-viewer",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "UI for switching groups of map overlays",
   "main": "dist/gg-map-viewer.js",
   "repository": "https://github.com/ggcity/map-viewer",
