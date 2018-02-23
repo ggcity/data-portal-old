@@ -2,26 +2,26 @@
 # yarn lockfile v1
 
 
-"@ggcity/leaflet-geojson@^0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@ggcity/leaflet-geojson/-/leaflet-geojson-0.5.0.tgz#809d0c88b4cdbaff05a5a0cc141048992762d8bd"
+"@ggcity/leaflet-geojson@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@ggcity/leaflet-geojson/-/leaflet-geojson-0.6.0.tgz#a571713e918e89ad378cfd367681f7a274ef55c8"
   dependencies:
     "@polymer/polymer" next
     leaflet "^1.2.0"
     leaflet.markercluster "^1.3.0"
 
-"@ggcity/leaflet-map@0.4.0", "@ggcity/leaflet-map@^0.5.0":
+"@ggcity/leaflet-map@0.5.0", "@ggcity/leaflet-map@^0.5.0":
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/@ggcity/leaflet-map/-/leaflet-map-0.5.0.tgz#4365bf0b011c700927b23b9612b4c3e76ea8b305"
   dependencies:
     "@polymer/polymer" next
     leaflet "^1.2.0"
 
-"@ggcity/leaflet-tile-layer@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@ggcity/leaflet-tile-layer/-/leaflet-tile-layer-0.4.0.tgz#77b3446fb17b01320193bd83e9401268e63aea7a"
+"@ggcity/leaflet-tile-layer@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@ggcity/leaflet-tile-layer/-/leaflet-tile-layer-0.5.0.tgz#e5572ab380ac76fce6b08e6fa26dd2427186b4f0"
   dependencies:
-    "@ggcity/leaflet-map" "0.4.0"
+    "@ggcity/leaflet-map" "^0.5.0"
     "@polymer/polymer" next
     leaflet "^1.2.0"
 
