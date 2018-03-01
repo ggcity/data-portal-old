@@ -84,6 +84,7 @@ export class GGMapViewer extends PolymerElement {
   }
 
   initializeMap(response) {
+    console.log(location.hash);
     let rjson = yaml.safeLoad(response);
 
     this.baseMaps = rjson.baseMaps;
@@ -117,6 +118,14 @@ export class GGMapViewer extends PolymerElement {
           // always on layers should always be visible
           if (t === 'alwaysOn') {
             l[t][j].visible = true;
+          }
+
+          if (location.hash !== '') {
+            if (l[t][j].machineName === location.hash.substring(1)) {
+              l[t][j].visible = true;
+            } else {
+              l[t][j].visible = false;
+            }
           }
 
           // For convenience, allow source to be globally defined, but propagate it here.
