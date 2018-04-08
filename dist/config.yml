@@ -20,6 +20,7 @@ overlayMaps:
         - machineName: 'gis:city_parcels'
           name: Parcels
           visible: true
+          identify: true
         - machineName: 'gis:city_boundary'
           name: OC City Boundaries
           visible: true
@@ -112,15 +113,15 @@ overlayMaps:
         - machineName: 'gis:cdbg'
           name: CDBG
           
-        - machineName: 'gis:building_open_permits'
-          source: //www.ci.garden-grove.ca.us/geoserver/gis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=gis:building_open_permits&outputFormat=application%2Fjson&srsName=EPSG:4326
+        - machineName: 'gis:building_scheduled_inspections'
+          source: //www.ci.garden-grove.ca.us/geoserver/gis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=gis:building_scheduled_inspections&outputFormat=application%2Fjson&srsName=EPSG:4326
           name: Open Building Permits
           type: geojson
-          radius: 4
+          radius: 10
           weight: 1
           maxClusterRadius: 120
           identify: true
-          cluster: true
+          cluster: false
 
     initialCenter:
       - 33.778724

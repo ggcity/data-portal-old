@@ -84,7 +84,6 @@ export class GGMapViewer extends PolymerElement {
   }
 
   initializeMap(response) {
-    console.log(location.hash);
     let rjson = yaml.safeLoad(response);
 
     this.baseMaps = rjson.baseMaps;
@@ -118,13 +117,13 @@ export class GGMapViewer extends PolymerElement {
           // always on layers should always be visible
           if (t === 'alwaysOn') {
             l[t][j].visible = true;
-          }
-
-          if (location.hash !== '') {
-            if (l[t][j].machineName === location.hash.substring(1)) {
-              l[t][j].visible = true;
-            } else {
-              l[t][j].visible = false;
+          } else {
+            if (location.hash !== '') {
+              if (l[t][j].machineName === location.hash.substring(1)) {
+                l[t][j].visible = true;
+              } else {
+                l[t][j].visible = false;
+              }
             }
           }
 
@@ -230,8 +229,9 @@ export class GGMapViewer extends PolymerElement {
       .forEach(l => {
         if (l.type === 'wms') {
           // group the sources
-          wmsLayers[l.source] = wmsLayers[l.source] || [];
-          wmsLayers[l.source].push(l.machineName);
+          wmsLayers[l.source] = wmsLayers[l.source] || { layers: [], identify: false };
+          wmsLayers[l.source].layers.push(l.machineName);
+          wmsLayers[l.source].identify = wmsLayers[l.source].identify || l.identify;
         } else if (l.type === 'geojson') {
           this.push('geojsonLayers', l);
         }
@@ -239,7 +239,7 @@ export class GGMapViewer extends PolymerElement {
 
     // flattened the grouped WMS sources
     for (let s in wmsLayers) {
-      this.push('wmsGroups', { source: s, layers: wmsLayers[s] });
+      this.push('wmsGroups', { source: s, layers: wmsLayers[s].layers, identify: wmsLayers[s].identify });
     }
   }
 
