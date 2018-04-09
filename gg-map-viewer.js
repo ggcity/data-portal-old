@@ -117,6 +117,14 @@ export class GGMapViewer extends PolymerElement {
           // always on layers should always be visible
           if (t === 'alwaysOn') {
             l[t][j].visible = true;
+          } else {
+            if (location.hash !== '') {
+              if (l[t][j].machineName === location.hash.substring(1)) {
+                l[t][j].visible = true;
+              } else {
+                l[t][j].visible = false;
+              }
+            }
           }
 
           // For convenience, allow source to be globally defined, but propagate it here.
@@ -133,9 +141,11 @@ export class GGMapViewer extends PolymerElement {
 
     // FIXME: hacky hardcoded initial view
     this._selectedBasemap = 0;
-    this.baseSource = this.baseMaps[0].source;
-    this.baseFormat = this.baseMaps[0].format;
-    this.baseLayers = this.baseMaps[0].layers;
+    if (this.baseMaps && this.baseMaps[0]) {
+      this.baseSource = this.baseMaps[0].source;
+      this.baseFormat = this.baseMaps[0].format;
+      this.baseLayers = this.baseMaps[0].layers;
+    }
 
     this.overlaySelect();
   }
@@ -221,8 +231,9 @@ export class GGMapViewer extends PolymerElement {
       .forEach(l => {
         if (l.type === 'wms') {
           // group the sources
-          wmsLayers[l.source] = wmsLayers[l.source] || [];
-          wmsLayers[l.source].push(l.machineName);
+          wmsLayers[l.source] = wmsLayers[l.source] || { layers: [], identify: false };
+          wmsLayers[l.source].layers.push(l.machineName);
+          wmsLayers[l.source].identify = wmsLayers[l.source].identify || l.identify;
         } else if (l.type === 'geojson') {
           this.push('geojsonLayers', l);
         }
@@ -230,7 +241,7 @@ export class GGMapViewer extends PolymerElement {
 
     // flattened the grouped WMS sources
     for (let s in wmsLayers) {
-      this.push('wmsGroups', { source: s, layers: wmsLayers[s] });
+      this.push('wmsGroups', { source: s, layers: wmsLayers[s].layers, identify: wmsLayers[s].identify });
     }
   }
 

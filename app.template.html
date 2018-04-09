@@ -125,7 +125,7 @@
   }
 
   @media (max-width: 600px) {
-    main {
+    main.card {
       right: 30px;
       left: 30px;
       top: 30px;
@@ -219,8 +219,8 @@
   </section>
 
   <footer class="card-body">
-    <a href="#" class="btn btn-link">Help</a>
-    <a href="#" class="btn btn-link">Tour</a>
+    <!-- <a href="#" class="btn btn-link">Help</a>
+    <a href="#" class="btn btn-link">Tour</a> -->
     <div class="pull-right show-mobile">
       <a href="#" class="btn btn-primary" on-click="toggleLayersMenu">
         <i class="fa fa-map"></i>
@@ -234,7 +234,7 @@
 <button id="basemap-switcher" on-click="switchBasemap"></button>
 
 <!-- Layers control menu (mobile only) -->
-<button id="layers-menu-toggle" class="btn btn-primary" on-click="toggleLayersMenu"><i class="fa fa-map fa-3x"></i></button>
+<button id="layers-menu-toggle" class="btn btn-primary" on-click="toggleLayersMenu"><i class="fa fa-bars fa-3x"></i></button>
 
 <leaflet-map map="{{map}}" latitude="33.778724" longitude="-117.960058" zoom="13" min-zoom="11" max-zoom="19" attribution-prefix="City of Garden Grove">
 
@@ -244,7 +244,7 @@
   </template>
 
   <template is="dom-repeat" items="{{wmsGroups}}" as="group">
-    <leaflet-wms-group map="{{map}}" source="[[group.source]]" layers="[[group.layers]]" transparent format="image/png">
+    <leaflet-wms-group map="{{map}}" source="[[group.source]]" layers="[[group.layers]]" transparent format="image/png" identify="[[group.identify]]">
     </leaflet-wms-group>
   </template>
 

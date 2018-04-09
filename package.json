@@ -1,6 +1,6 @@
 {
   "name": "@ggcity/map-viewer",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "description": "UI for switching groups of map overlays",
   "main": "dist/gg-map-viewer.js",
   "repository": "https://github.com/ggcity/map-viewer",
@@ -8,18 +8,19 @@
   "license": "GPL-3.0",
   "flat": true,
   "dependencies": {
-    "@ggcity/leaflet-geojson": "^0.4.0",
-    "@ggcity/leaflet-map": "^0.4.0",
-    "@ggcity/leaflet-tile-layer": "^0.4.0",
-    "@ggcity/leaflet-wms": "^0.4.0",
+    "@ggcity/leaflet-geojson": "^0.6.0",
+    "@ggcity/leaflet-map": "^0.5.0",
+    "@ggcity/leaflet-tile-layer": "^0.5.0",
+    "@ggcity/leaflet-wms": "^0.5.0",
     "@polymer/paper-toggle-button": "PolymerElements/paper-toggle-button#3.0-preview",
     "@polymer/polymer": "3.0.0-pre.1",
-    "leaflet": "^1.2.0",
-    "js-yaml": "^3.10.0"
+    "js-yaml": "^3.10.0",
+    "leaflet": "^1.3.1"
   },
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "resolutions": {
-    "@polymer/polymer": "3.0.0-pre.1"
+    "@polymer/polymer": "3.0.0-pre.1",
+    "@ggcity/leaflet-map": "0.5.0",
+    "leaflet": "1.3.1"
   }
 }

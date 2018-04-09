@@ -102,9 +102,6 @@ overlayMaps:
       alwaysOn:
         - machineName: 'gis:city_boundary'
       exclusives:
-        - machineName: 'gis:code_enf_officer_coverage'
-          name: Code Enforcement Coverage
-          visible: true
         - machineName: 'gis:city_owned_parcels'
           name: City Owned Parcels
         - machineName: 'gis:redev'
@@ -112,15 +109,18 @@ overlayMaps:
         - machineName: 'gis:cdbg'
           name: CDBG
           
-        - machineName: 'gis:building_open_permits'
-          source: //www.ci.garden-grove.ca.us/geoserver/gis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=gis:building_open_permits&outputFormat=application%2Fjson&srsName=EPSG:4326
-          name: Open Building Permits
+        - machineName: 'gis:planning_open_cases'
+          source: //www.ci.garden-grove.ca.us/geoserver/gis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=gis:planning_open_cases&outputFormat=application%2Fjson&srsName=EPSG:4326
+          name: Open Planning Cases
           type: geojson
-          radius: 4
-          weight: 1
-          maxClusterRadius: 120
+          radius: 10 
+          weight: 0
+          fillColor: '#b241f4'
+          fillOpacity: 0.8 
+          maxClusterRadius: 30 
           identify: true
           cluster: true
+          visible: true
 
     initialCenter:
       - 33.778724
