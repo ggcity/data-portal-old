@@ -141,9 +141,11 @@ export class GGMapViewer extends PolymerElement {
 
     // FIXME: hacky hardcoded initial view
     this._selectedBasemap = 0;
-    this.baseSource = this.baseMaps[0].source;
-    this.baseFormat = this.baseMaps[0].format;
-    this.baseLayers = this.baseMaps[0].layers;
+    if (this.baseMaps && this.baseMaps[0]) {
+      this.baseSource = this.baseMaps[0].source;
+      this.baseFormat = this.baseMaps[0].format;
+      this.baseLayers = this.baseMaps[0].layers;
+    }
 
     this.overlaySelect();
   }
