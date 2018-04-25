@@ -106,8 +106,8 @@ export class GGMapViewer extends PolymerElement {
       let l = this.overlayMaps[i].layers;
       this.overlayMaps[i].flattenedLayers = [];
 
-      // iterate through layer interaction types (always on, exclusives, optionals)
-      for (let t in l) {
+      // iterate through layer interaction types (optionals, exclusives, always on.. in this order)
+      for (let t of ['optionals', 'exclusives', 'alwaysOn']) {
         this.overlayMaps[i].flattenedLayers = this.overlayMaps[i].flattenedLayers.concat(l[t]);
 
         // iterate through all layers
@@ -229,9 +229,10 @@ export class GGMapViewer extends PolymerElement {
       .forEach(l => {
         if (l.type === 'wms') {
           // group the sources
-          wmsLayers[l.source] = wmsLayers[l.source] || { layers: [], identify: false };
+          wmsLayers[l.source] = wmsLayers[l.source] || { layers: [], identify: false, infoFormat: null };
           wmsLayers[l.source].layers.push(l.machineName);
           wmsLayers[l.source].identify = wmsLayers[l.source].identify || l.identify;
+          wmsLayers[l.source].infoFormat = wmsLayers[l.source].infoFormat || l.infoFormat;
         } else if (l.type === 'geojson') {
           this.push('geojsonLayers', l);
         }

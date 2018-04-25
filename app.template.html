@@ -244,7 +244,7 @@
   </template>
 
   <template is="dom-repeat" items="{{wmsGroups}}" as="group">
-    <leaflet-wms-group map="{{map}}" source="[[group.source]]" layers="[[group.layers]]" transparent format="image/png" identify="[[group.identify]]">
+    <leaflet-wms-group map="{{map}}" source="[[group.source]]" layers="[[group.layers]]" transparent format="image/png" identify="[[group.identify]]" info-format="[[group.infoFormat]]">
     </leaflet-wms-group>
   </template>
 
