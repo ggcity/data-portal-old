@@ -1,3 +1,10 @@
+-------------------------------------------
+
+**DEPRECATED FOR [ggcity/map-portal](https://github.com/ggcity/map-portal)**
+
+-------------------------------------------
+
+
 # \<gg-map-viewer\>
 
 UI for selecting groups of map overlays. Requires Polymer 3.x.
