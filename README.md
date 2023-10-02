@@ -1,6 +1,6 @@
 -------------------------------------------
 
-**DEPRECATED FOR [ggcity/map-portal](https://github.com/ggcity/map-portal)**
+**DEPRECATED FOR [ggcity/data-portal](https://github.com/ggcity/data-portal)**
 
 -------------------------------------------
 
